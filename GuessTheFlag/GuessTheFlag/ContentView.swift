@@ -11,7 +11,11 @@ struct ContentView: View {
     @State var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
     @State var correctAnswer = Int.random(in: 0...2)
     @State private var showingScore = false
+    @State private var showingTotalScore = false
     @State private var scoreTitle = ""
+    @State private var currentScore = 0
+    @State private var numQuestions = 0
+    
 
     var body: some View {
         
@@ -53,7 +57,7 @@ struct ContentView: View {
                 Spacer()
                 Spacer()
                 
-                Text("Score: ???")
+                Text("Score: \(currentScore)")
                     .foregroundStyle(.white)
                     .font(.title.weight(.bold))
                 
@@ -64,23 +68,44 @@ struct ContentView: View {
         .alert(scoreTitle, isPresented: $showingScore) {
             Button("Continue", action: askQuestion)
         } message: {
-            Text("Your score is ???")
+            Text("Your score is \(currentScore)")
+        }
+        .alert("Total score is", isPresented: $showingTotalScore) {
+            Button("Restart", action: reset)
+        } message: {
+            Text("Your total score is \(currentScore)")
         }
     }
     
     func flagTapped(_ number: Int) {
         if number == correctAnswer {
             scoreTitle = "Correct"
+            currentScore += 2
         } else {
-            scoreTitle = "Wrong"
+            scoreTitle = "Wrong. That is the flag of \(countries[number])"
+            if currentScore > 0 {
+                currentScore -= 1
+            }
+            
         }
+        numQuestions += 1
         
-        showingScore = true
+        if (numQuestions == 8) {
+            showingTotalScore = true
+        } else {
+            showingScore = true
+        }
     }
     
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+    }
+    
+    func reset() {
+        numQuestions = 0
+        currentScore = 0
+        askQuestion()
     }
 
     
