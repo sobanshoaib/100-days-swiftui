@@ -11,6 +11,7 @@ struct ContentView: View {
     @State var costCheque = 0.0
     @State var numPeople = 2
     @State var tipAmount = 20
+    @State var zeroTipSelected = false
     @FocusState private var amountFocused: Bool
     let tipPercentages = [10, 15, 20, 25, 0]
     
@@ -70,6 +71,7 @@ struct ContentView: View {
                 
                 Section("Total amount before dividing") {
                     Text(totalAfterTip, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        .background(tipAmount == 0 ? .red : .white)
                 }
             }
             .navigationTitle("WeSplit")
