@@ -11,7 +11,10 @@ struct ContentView: View {
     
     @State var randomMove = Int.random(in: 0...2)
     @State var move = "Rock"
-    let moves = ["Rock", "Paper", "Scissors"]
+    @State var moves = ["Rock", "Paper", "Scissors"].shuffled()
+    @State var showingResult = false
+    @State var resultTitle = ""
+    @State var winResult = false
     
     var body: some View {
         VStack {
@@ -37,8 +40,7 @@ struct ContentView: View {
                 HStack {
                     ForEach(moves, id: \.self) { eachMove in
                         Button {
-                            move = eachMove
-                            print(move)
+                            clickAction(eachMove)
                         } label: {
                             Rectangle()
                                 .frame(width: 50, height: 50)
@@ -53,8 +55,34 @@ struct ContentView: View {
             }
         }
         .padding()
+        .alert(resultTitle, isPresented: $showingResult) {
+            Button("Continue") {}
+        } message: {
+            Text("Soccer")
+        }
     }
+    
+    func clickAction(_ eachMove: String) {
+        move = eachMove
+        if (move == moves[randomMove]) {
+            resultTitle = "You win a point"
+        }
+        moves.shuffle()
+        randomMove = Int.random(in: 0...2)
+        showingResult = true
+        print(move)
+    }
+    
+//    func gameAlgorithm(move) {
+//        var cpuChoice = moves[randomMove]
+//        
+//        if move == "Rock" && cpuChoice == "Paper" {
+//            winResult = true
+//        }
+//    }
 }
+
+
 
 #Preview {
     ContentView()
