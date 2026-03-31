@@ -63,23 +63,54 @@ struct ContentView: View {
     }
     
     func clickAction(_ eachMove: String) {
-        move = eachMove
-        if (move == moves[randomMove]) {
-            resultTitle = "You win a point"
+        var result = gameAlgorithm(eachMove)
+        if result == true {
+            resultTitle = "You win a point."
+        } else {
+            resultTitle = "You did not win a point."
         }
         moves.shuffle()
         randomMove = Int.random(in: 0...2)
         showingResult = true
-        print(move)
+        print(eachMove)
     }
     
-//    func gameAlgorithm(move) {
-//        var cpuChoice = moves[randomMove]
-//        
-//        if move == "Rock" && cpuChoice == "Paper" {
-//            winResult = true
-//        }
-//    }
+    func gameAlgorithm(_ move: String) -> Bool {
+        let cpuChoice = moves[randomMove]
+        
+        if move == cpuChoice {
+            winResult = false
+            return winResult
+        }
+        
+        if move == "Rock" {
+            if cpuChoice == "Paper" {
+                winResult = false
+            } else {
+                winResult = true
+            }
+        }
+        
+        else if move == "Paper" {
+            if cpuChoice == "Scissors" {
+                winResult = false
+            } else {
+                winResult = true
+            }
+        }
+        
+        else if move == "Scissors" {
+            if cpuChoice == "Rock" {
+                winResult = false
+            } else {
+                winResult = true
+            }
+        }
+        
+        return winResult
+    }
+    
+    
 }
 
 
