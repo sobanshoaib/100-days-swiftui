@@ -18,6 +18,7 @@ struct ContentView: View {
     @State var winResult = false
     @State var points = 0
     @State var numRounds = 0
+    @State var winCondition = true
     
     var body: some View {
         VStack {
@@ -35,7 +36,7 @@ struct ContentView: View {
                 .frame(width: 50, height: 50)
                 .clipShape(Circle())
                 .overlay(
-                    Text("Win")
+                    Text(winCondition ? "Win" : "Lose")
                 )
                 .padding()
             VStack {
@@ -78,12 +79,18 @@ struct ContentView: View {
     
     func clickAction(_ eachMove: String) {
         let result = gameAlgorithm(eachMove)
-        if result == true {
+        if result == winCondition {
             resultTitle = "You win this round!"
+            points += 1
         } else {
             resultTitle = "You did not win this round."
+            if points > 0 {
+                points -= 1
+            }
         }
 
+        numRounds += 1
+        winCondition.toggle()
         moves.shuffle()
         randomMove = Int.random(in: 0...2)
         showingResult = true
@@ -120,17 +127,7 @@ struct ContentView: View {
                 winResult = true
             }
         }
-        
-        if winResult == true {
-            points += 1
-        } else {
-            if points > 0 {
-                points -= 1
-            }
-        }
-        
-        numRounds += 1
-        
+                
         return winResult
     }
     
