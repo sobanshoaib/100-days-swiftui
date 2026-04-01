@@ -13,8 +13,11 @@ struct ContentView: View {
     @State var move = "Rock"
     @State var moves = ["Rock", "Paper", "Scissors"].shuffled()
     @State var showingResult = false
+    @State var showingTotalResult = false
     @State var resultTitle = ""
     @State var winResult = false
+    @State var points = 0
+    @State var numRounds = 0
     
     var body: some View {
         VStack {
@@ -56,23 +59,35 @@ struct ContentView: View {
         }
         .padding()
         .alert(resultTitle, isPresented: $showingResult) {
-            Button("Continue") {}
+            Button("Continue") {
+                if numRounds == 3 {
+                    showingTotalResult = true
+                }
+            }
         } message: {
-            Text("Soccer")
+            Text("You have \(points) points.")
+        }
+        .alert("Game finished.", isPresented: $showingTotalResult) {
+            Button("Retry game") {
+                resetGame()
+            }
+        } message: {
+            Text("You finished with \(points) points.")
         }
     }
     
     func clickAction(_ eachMove: String) {
-        var result = gameAlgorithm(eachMove)
+        let result = gameAlgorithm(eachMove)
         if result == true {
-            resultTitle = "You win a point."
+            resultTitle = "You win this round!"
         } else {
-            resultTitle = "You did not win a point."
+            resultTitle = "You did not win this round."
         }
+
         moves.shuffle()
         randomMove = Int.random(in: 0...2)
         showingResult = true
-        print(eachMove)
+        
     }
     
     func gameAlgorithm(_ move: String) -> Bool {
@@ -80,10 +95,9 @@ struct ContentView: View {
         
         if move == cpuChoice {
             winResult = false
-            return winResult
         }
         
-        if move == "Rock" {
+        else if move == "Rock" {
             if cpuChoice == "Paper" {
                 winResult = false
             } else {
@@ -107,7 +121,25 @@ struct ContentView: View {
             }
         }
         
+        if winResult == true {
+            points += 1
+        } else {
+            if points > 0 {
+                points -= 1
+            }
+        }
+        
+        numRounds += 1
+        
         return winResult
+    }
+    
+    func resetGame() {
+        points = 0
+        moves.shuffle()
+        randomMove = Int.random(in: 0...2)
+        numRounds = 0
+        
     }
     
     
